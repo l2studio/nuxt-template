@@ -1,0 +1,16 @@
+{
+  "verbose": true,
+  "exec": "ts-node -r tsconfig-paths/register -T -P tsconfig.json server/index.ts",
+  "ext": "js,ts,json",
+  "ignore": [
+    ".gitignore",
+    "package.json",
+    "node_modules"
+  ],
+  "watch": [
+    "./nuxt.config.js",
+    "./.env",
+    "./.env.override",
+    "server/**/*"
+  ]
+}
