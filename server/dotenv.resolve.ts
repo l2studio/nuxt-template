@@ -3,7 +3,8 @@ import path from 'path'
 import fs from 'fs'
 
 dotenv.config({
-  path: path.resolve(__dirname, '..', '.env')
+  path: path.resolve(__dirname, '..', '.env'),
+  debug: undefined
 })
 
 const override = path.resolve(__dirname, '..', '.env.override')
