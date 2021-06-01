@@ -37,20 +37,20 @@ Koa-based Nuxt template for L2 Studio
 |-- plugins
 |-- public
 |-- server
-|   |-- bootstrap.ts
 |   |-- controllers
 |   |   `-- home.ts
-|   |-- dotenv.resolve.ts
-|   |-- index.ts
-|   |-- interface.ts
 |   |-- lifecycle
 |   |   `-- common.ts
 |   |-- middlewares
-|   |-- premain.nuxt.ts
-|   |-- premain.serve.ts
 |   |-- routes
 |   |   `-- index.ts
-|   `-- utils
+|   |-- utils
+|   |-- bootstrap.ts
+|   |-- dotenv.resolve.ts
+|   |-- index.ts
+|   |-- interface.ts
+|   |-- premain.nuxt.ts
+|   `-- premain.serve.ts
 |-- shims-tsx.d.ts
 |-- shims-vue.d.ts
 |-- store
