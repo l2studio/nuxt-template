@@ -48,7 +48,7 @@ module.exports = {
       },
       preset: {
         autoprefixer: {
-          grid: false
+          grid: true
         }
       }
     },
