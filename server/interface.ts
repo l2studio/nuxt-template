@@ -38,6 +38,8 @@ export namespace Server {
 
   export type RouterContext = KoaRouterContext<State, Context>
 
+  export const HttpError = Koa.HttpError
+
   export class Framework extends Koa<State, Context> {}
 }
 
