@@ -6,14 +6,18 @@ type ValidatorOptions = {
   query?: Joi.ObjectSchema
   params?: Joi.ObjectSchema
   body?: Joi.ObjectSchema | Joi.ArraySchema
-  errorHandler?: (ctx: Server.RouterContext, error: Joi.ValidationError) => void
+  errorHandler?: (ctx: Server.RouterContext, error: Joi.ValidationError) => void | Promise<void>
 }
 
 const props = ['header', 'query', 'params', 'body']
 
+function isPromise<T = any> (obj: any): obj is Promise<T> {
+  return !!obj && (typeof obj === 'object' || typeof obj === 'function') && typeof obj.then === 'function'
+}
+
 export { Joi }
 export default function validator (opts: ValidatorOptions): Server.RouterMiddleware {
-  return (ctx, next) => {
+  return async (ctx, next) => {
     for (const prop of props) {
       if (!Object.prototype.hasOwnProperty.call(opts, prop)) {
         continue
@@ -23,7 +27,8 @@ export default function validator (opts: ValidatorOptions): Server.RouterMiddlew
       if (error) {
         if (typeof opts.errorHandler === 'function') {
           ctx.status = 404 // flag
-          opts.errorHandler(ctx, error)
+          const callback = opts.errorHandler(ctx, error)
+          isPromise(callback) && await callback
           if (ctx.status === 404 && !ctx.body) {
             // Set default status and response body to prevent the error handler from doing nothing
             ctx.debug('Error handler of the route validator did not set response')
