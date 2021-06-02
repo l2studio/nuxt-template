@@ -56,8 +56,11 @@
       ]
     },
     // "rootDirs": [],                              /* List of root folders whose combined content represents the structure of the project at runtime. */
-    // "typeRoots": [],                             /* List of folders to include type definitions from. */
-    "types": [                                     /* Type declaration files to be included in compilation. */
+    "typeRoots": [                                  /* List of folders to include type definitions from. */
+      "./types",
+      "./node_modules/@types"
+    ],
+    "types": [                                      /* Type declaration files to be included in compilation. */
       "@types/node",
       "vue/types",
       "vuex/types",
@@ -65,7 +68,7 @@
       "@nuxt/types",
       "@nuxtjs/axios",
       "@nuxtjs/composition-api",
-      "@nuxtjs/universal-storage",
+      "@nuxtjs/universal-storage"
       // TODO: Custom your nuxt or other type declaration in here...
     ],
     // "allowSyntheticDefaultImports": true,        /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
@@ -86,5 +89,8 @@
     /* Advanced Options */
     "skipLibCheck": true,                           /* Skip type checking of declaration files. */
     "forceConsistentCasingInFileNames": true        /* Disallow inconsistently-cased references to the same file. */
-  }
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }

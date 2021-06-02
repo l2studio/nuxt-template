@@ -3,6 +3,7 @@ import type { IncomingMessage } from 'http'
 import type { Server } from '@/server/interface'
 
 // See: /server/lifecycle/csrf.ts
+// Type declaration: /types/@nuxt/types/index.d.ts
 export default defineNuxtPlugin((ctx, inject) => {
   inject('csrfToken', () => {
     if (process.server) {
@@ -20,7 +21,7 @@ export default defineNuxtPlugin((ctx, inject) => {
   }
   if (process.client) {
     ctx.$axios.onRequest((config) => {
-      const token = ctx.app.$csrfToken() // TODO: fix type declaration
+      const token = ctx.$csrfToken()
       if (!config.headers['x-csrf-token'] && token) {
         config.headers['x-csrf-token'] = token
       }
