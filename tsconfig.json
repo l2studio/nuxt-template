@@ -60,6 +60,7 @@
     "types": [                                     /* Type declaration files to be included in compilation. */
       "@types/node",
       "@nuxt/types",
+      "@nuxtjs/axios",
       "@nuxtjs/universal-storage"
       // TODO: Custom your nuxt or other type declaration in here...
     ],

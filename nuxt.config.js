@@ -26,9 +26,13 @@ module.exports = {
     ]
   },
   telemetry: false,
-  loading: false,
+  loading: {
+    color: '#79b8ff',
+    height: '2px'
+  },
   css: ['~/assets/styles/tailwind.css'],
   modules: [
+    '@nuxtjs/axios',
     '@nuxtjs/universal-storage'
   ],
   buildModules: [
