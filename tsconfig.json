@@ -59,9 +59,13 @@
     // "typeRoots": [],                             /* List of folders to include type definitions from. */
     "types": [                                     /* Type declaration files to be included in compilation. */
       "@types/node",
+      "vue/types",
+      "vuex/types",
+      "vue-router/types",
       "@nuxt/types",
       "@nuxtjs/axios",
-      "@nuxtjs/universal-storage"
+      "@nuxtjs/composition-api",
+      "@nuxtjs/universal-storage",
       // TODO: Custom your nuxt or other type declaration in here...
     ],
     // "allowSyntheticDefaultImports": true,        /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */

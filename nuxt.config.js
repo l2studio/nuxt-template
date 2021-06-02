@@ -40,6 +40,9 @@ module.exports = {
     '@nuxtjs/eslint-module',
     '@nuxtjs/composition-api/module'
   ],
+  plugins: [
+    '~/plugins/csrf.plugin'
+  ],
   build: {
     parallel: !isProduction,
     cache: !isProduction,

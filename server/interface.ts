@@ -2,7 +2,6 @@ import EventEmitter from 'events'
 import Koa from 'koa'
 import KoaSession from 'koa-session'
 import KoaRouter, { RouterContext as KoaRouterContext } from '@koa/router'
-import { NuxtApp } from '@nuxt/types/app'
 import path from 'path'
 
 const debug = require('debug')('lgou2w:nuxt')
@@ -15,7 +14,9 @@ interface Debugger {
 // Core server
 export namespace Server {
 
-  export interface Request extends Koa.Request {}
+  export interface Request extends Koa.Request {
+    readonly csrfToken?: () => string // See: lifecycles/csrf.ts
+  }
 
   export interface Response extends Koa.Response {}
 
@@ -29,8 +30,12 @@ export namespace Server {
   export interface Context extends Koa.DefaultContext {
     readonly bootstrap: Bootstrap
     readonly debug: Debugger
+    request: Request
+    response: Response
     session: Session | null
   }
+
+  export type MiddlewareContext = Koa.ParameterizedContext<State, Context>
 
   export class Router extends KoaRouter<State, Context> {}
 
@@ -62,7 +67,7 @@ export interface Lifecycle {
 type BootstrapOptions = {
   debug?: Debugger
   framework: Server.Framework
-  nuxt: NuxtApp | null
+  nuxt: any | null // TODO: nuxt type declaration
   lifecycles?: Lifecycle[]
 }
 
@@ -72,7 +77,7 @@ export class Bootstrap extends EventEmitter {
   private configured = false
   readonly debug: Debugger
   readonly framework: Server.Framework
-  readonly nuxt: NuxtApp | null
+  readonly nuxt: any | null // TODO: nuxt type declaration
   readonly lifecycles: Lifecycle[]
 
   static Event = {
@@ -92,8 +97,10 @@ export class Bootstrap extends EventEmitter {
     this.lifecycles = opts.lifecycles || []
   }
 
-  readonly isDev = process.env.NODE_ENV !== 'production'
   readonly rootDir = path.resolve(__dirname, '..')
+  readonly serverDir = path.resolve(this.rootDir, 'server')
+  readonly isDev = process.env.NODE_ENV !== 'production'
+  readonly csrfEnabled = process.env.CSRF_ENABLE === 'true' || process.env.CSRF_ENABLE === process.env.NODE_ENV
 
   get isConfigured () {
     return this.configured
