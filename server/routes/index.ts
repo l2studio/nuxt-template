@@ -19,7 +19,7 @@ const routes = new Server.Router({ prefix: '/api' })
     HomeController.get
   )
   .get('/csrf', (ctx) => {
-    ctx.body = { csrf: ctx.request.csrfToken!() }
+    ctx.body = { csrf: ctx.request.csrfToken?.() }
   })
   .post('/csrf', (ctx) => {
     ctx.body = { csrf: ctx.bootstrap.csrfEnabled }
