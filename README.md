@@ -35,13 +35,16 @@ Koa-based Nuxt template for L2 Studio
 |-- pages
 |   `-- index.vue
 |-- plugins
+|   `-- csrf.plugin.ts
 |-- public
 |-- server
 |   |-- controllers
 |   |   `-- home.ts
 |   |-- lifecycle
 |   |   `-- common.ts
+|   |   `-- csrf.ts
 |   |-- middlewares
+|   |   `-- validator.ts
 |   |-- routes
 |   |   `-- index.ts
 |   |-- utils
@@ -55,6 +58,10 @@ Koa-based Nuxt template for L2 Studio
 |-- shims-vue.d.ts
 |-- store
 |   `-- index.ts
+|-- types
+|   `-- @nuxt
+|       `-- types
+|           `-- index.d.ts
 |-- .editorconfig
 |-- .env
 |-- .eslintrc.js
