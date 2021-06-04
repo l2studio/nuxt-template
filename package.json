@@ -14,7 +14,8 @@
     "dev:serve": "cross-env DEBUG='lgou2w:*' NODE_ENV=development BOOTSTRAP_MODE=serve nodemon --config nodemon.serve.json",
     "dev:nuxt": "cross-env DEBUG='lgou2w:*' NODE_ENV=development BOOTSTRAP_MODE=nuxt nodemon --config nodemon.nuxt.json",
     "start": "cross-env NODE_ENV=production ts-node -r tsconfig-paths/register -T -P tsconfig.json server/index.ts",
-    "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore ."
+    "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore .",
+    "lint:fix": "eslint --fix --ext .js,.ts,.vue --ignore-path .gitignore ."
   },
   "dependencies": {
     "@koa/router": "^10.0.0",
