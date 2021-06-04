@@ -5,6 +5,7 @@ Koa-based Nuxt template for L2 Studio
 ## Dependencies
 
 * Nuxt 2
+* Nuxt Axios
 * Nuxt Composition API
 * Nuxt Universal storage
 * Koa 2
@@ -100,6 +101,9 @@ npm run start
 
 # Run ESLint code check
 npm run lint
+
+# Run ESLint code fix
+npm run lint:fix
 ```
 
 ## License
