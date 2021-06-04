@@ -68,10 +68,6 @@ export default defineLifecycle({
       })
       debug('csrf active')
     }
-  },
-  async onInitializing (bootstrap: Bootstrap) {
-  },
-  async onReady (bootstrap: Bootstrap) {
   }
 })
 

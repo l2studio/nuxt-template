@@ -17,7 +17,7 @@ export default () => require('./bootstrap')
   .default()
   .then(async (bootstrap: Bootstrap) => {
     await bootstrap.onReady()
-    bootstrap.framework.listen(_port, host)
+    ;(bootstrap as any)[Bootstrap.HttpServer] = bootstrap.framework.listen(_port, host)
     consola.ready({ badge: true, message: `Server listening on ${process.env.BASE_URL}` })
     return bootstrap
   })

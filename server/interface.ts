@@ -1,7 +1,9 @@
+import type { Server as HttpServer } from 'http'
 import EventEmitter from 'events'
 import Koa from 'koa'
 import KoaSession from 'koa-session'
 import KoaRouter, { RouterContext as KoaRouterContext } from '@koa/router'
+import consola from 'consola'
 import path from 'path'
 
 const debug = require('debug')('lgou2w:nuxt')
@@ -54,13 +56,16 @@ export interface Lifecycle {
   name: string
 
   // eslint-disable-next-line no-use-before-define
-  onConfigure (bootstrap: Bootstrap): Promise<void>
+  onConfigure? (bootstrap: Bootstrap): Promise<void>
 
   // eslint-disable-next-line no-use-before-define
-  onInitializing (bootstrap: Bootstrap): Promise<void>
+  onInitializing? (bootstrap: Bootstrap): Promise<void>
 
   // eslint-disable-next-line no-use-before-define
-  onReady (bootstrap: Bootstrap): Promise<void>
+  onReady? (bootstrap: Bootstrap): Promise<void>
+
+  // eslint-disable-next-line no-use-before-define
+  onClosing? (bootstrap: Bootstrap): Promise<void>
 }
 
 // Options
@@ -89,6 +94,8 @@ export class Bootstrap extends EventEmitter {
     STARTED: 'started'
   }
 
+  static HttpServer = Symbol('HttpServer')
+
   constructor (opts: BootstrapOptions) {
     super()
     this.debug = opts.debug || debug
@@ -108,6 +115,7 @@ export class Bootstrap extends EventEmitter {
 
   async configure (): Promise<this> {
     if (this.configured) return this
+    this.bindExitHandler()
     this.emit(Bootstrap.Event.CONFIGURE, this)
     debug(':rootDir', this.rootDir)
     debug(':extended prototype')
@@ -142,7 +150,7 @@ export class Bootstrap extends EventEmitter {
     debug(':configure')
     for (const lifecycle of this.lifecycles) {
       debug(':configure lifecycle:', lifecycle.name)
-      await lifecycle.onConfigure(this)
+      await lifecycle.onConfigure?.(this)
     }
   }
 
@@ -150,7 +158,7 @@ export class Bootstrap extends EventEmitter {
     debug(':initializing')
     for (const lifecycle of this.lifecycles) {
       debug(':initializing lifecycle:', lifecycle.name)
-      await lifecycle.onInitializing(this)
+      await lifecycle.onInitializing?.(this)
     }
   }
 
@@ -165,9 +173,57 @@ export class Bootstrap extends EventEmitter {
     debug(':ready')
     for (const lifecycle of this.lifecycles) {
       debug(':ready lifecycle:', lifecycle.name)
-      await lifecycle.onReady(this)
+      await lifecycle.onReady?.(this)
     }
     return this
+  }
+
+  private _bindExitHandler = false
+  private bindExitHandler () {
+    if (this._bindExitHandler) return
+    this._bindExitHandler = true
+    debug(':bind exit handler')
+    process.once('exit', (code) => debug(':exit with code:', code))
+    process.once('SIGINT', this.exitHandler.bind(this, 'SIGNINT'))
+    process.once('SIGQUIT', this.exitHandler.bind(this, 'SIGQUIT'))
+    process.once('SIGTERM', this.exitHandler.bind(this, 'SIGTERM'))
+    process.once('SIGUSR1', this.exitHandler.bind(this, 'SIGUSR1'))
+    process.once('SIGUSR2', this.exitHandler.bind(this, 'SIGUSR2'))
+  }
+
+  private async exitHandler (signal: string) {
+    debug(':receive signal %s, closing...', signal)
+    return new Promise<number>(resolve => {
+      debug(':closing http server')
+      const server = ((this as any)[Bootstrap.HttpServer] as HttpServer)
+      if (!server) return resolve(0)
+      server.close((err) => {
+        if (err) {
+          consola.error('Close http server failed:', err)
+          resolve(1)
+        } else {
+          debug(':closed http server')
+          resolve(0)
+        }
+      })
+    }).then(async (exitCode) => {
+      try {
+        debug(':closing lifecycles')
+        for (const lifecycle of this.lifecycles) {
+          debug(':closing lifecycle:', lifecycle.name)
+          try {
+            await lifecycle.onClosing?.(this)
+          } catch (err) {
+            consola.error('Close lifecycle \'%s\' failed:', lifecycle.name, err)
+            exitCode = 2
+          }
+        }
+      } catch (err) {
+        debug('close with error:', err)
+        exitCode = 1
+      }
+      process.exit(exitCode)
+    })
   }
 }
 
@@ -184,9 +240,10 @@ export function createBootstrap<T extends Bootstrap> (
 
 export function defineLifecycle (lifecycle: {
   name: string
-  onConfigure (bootstrap: Bootstrap): Promise<void>
-  onInitializing (bootstrap: Bootstrap): Promise<void>
-  onReady (bootstrap: Bootstrap): Promise<void>
+  onConfigure? (bootstrap: Bootstrap): Promise<void>
+  onInitializing? (bootstrap: Bootstrap): Promise<void>
+  onReady? (bootstrap: Bootstrap): Promise<void>
+  onClosing? (bootstrap: Bootstrap): Promise<void>
 }): Lifecycle {
   return lifecycle
 }

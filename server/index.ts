@@ -12,5 +12,5 @@ require(isNuxt ? './premain.nuxt' : './premain.serve')
   })
   .catch((err: Error | any) => {
     console.error('Bootstrap start failed:', err)
-    process.exit(-1)
+    process.exit(1)
   })

@@ -35,7 +35,7 @@ export default () => nuxt
       ctx.req.ctx = ctx
       nuxt.render(ctx.req, ctx.res)
     })
-    bootstrap.framework.listen(_port, host)
+    ;(bootstrap as any)[Bootstrap.HttpServer] = bootstrap.framework.listen(_port, host)
     consola.ready({ badge: true, message: `Server listening on ${process.env.BASE_URL}` })
     return bootstrap
   })

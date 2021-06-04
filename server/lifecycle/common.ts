@@ -32,10 +32,6 @@ export default defineLifecycle({
     bootstrap.framework.use(KoaStatic(path.resolve(bootstrap.rootDir, 'public'), {
       // TODO: public static options in here...
     }))
-  },
-  async onInitializing (bootstrap: Bootstrap) {
-  },
-  async onReady (bootstrap: Bootstrap) {
   }
 })
 
