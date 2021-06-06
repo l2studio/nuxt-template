@@ -215,12 +215,22 @@ export class Bootstrap extends EventEmitter {
             await lifecycle.onClosing?.(this)
           } catch (err) {
             consola.error('Close lifecycle \'%s\' failed:', lifecycle.name, err)
-            exitCode = 2
+            exitCode = 1
           }
         }
       } catch (err) {
         debug('close with error:', err)
         exitCode = 1
+      }
+      if (this.nuxt) {
+        debug(':closing nuxt')
+        try {
+          await this.nuxt.close()
+          debug(':closed nuxt')
+        } catch (err) {
+          consola.error('Close nuxt failed:', err)
+          exitCode = 1
+        }
       }
       process.exit(exitCode)
     })
